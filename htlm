@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meus Links - Dashboard Completo</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="dark-theme">
+
+    <div class="background-glow"></div>
+
+    <div class="container">
+        <div class="top-bar">
+            <button id="theme-toggle" class="icon-btn" title="Alternar Tema">
+                <i class="fa-solid fa-sun"></i>
+            </button>
+        </div>
+
+        <header class="profile">
+            <div class="avatar-container">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&auto=format&fit=crop&q=80" alt="Foto de Perfil" class="profile-img">
+            </div>
+            <h1>Seu Nome / Marca</h1>
+            <p class="bio">Desenvolvedor & Criador de Conteúdo</p>
+        </header>
+
+        <section class="card">
+            <h2><i class="fa-solid fa-plus"></i> Novo Link</h2>
+            <form id="link-form">
+                <div class="input-group">
+                    <input type="text" id="input-titulo" placeholder="Título do Site (ex: Meu Blog)" required>
+                </div>
+                <div class="input-group">
+                    <input type="url" id="input-url" placeholder="URL (ex: https://...)" required>
+                </div>
+                <button type="submit" class="btn-primary">Adicionar Link</button>
+            </form>
+        </section>
