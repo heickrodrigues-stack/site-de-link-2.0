@@ -1,1 +1,349 @@
 
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciador de Links</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --border-color: #334155;
+            --primary-color: #38bdf8;
+            --accent-color: #818cf8;
+            --text-color: #f8fafc;
+            --text-secondary: #94a3b8;
+            --danger-color: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            padding: 30px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        header {
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        header p {
+            color: var(--text-secondary);
+        }
+
+        /* Card Form & Controls */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .card h2 {
+            font-size: 1.1rem;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        @media (max-width: 700px) {
+            .form-grid { grid-template-columns: 1fr; }
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: #0f172a;
+            color: var(--text-color);
+            outline: none;
+            font-size: 0.95rem;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--primary-color);
+        }
+
+        .btn-add {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .btn-add:hover { opacity: 0.9; }
+
+        /* Controles de Busca e Filtro */
+        .controls-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 12px;
+        }
+
+        @media (max-width: 600px) {
+            .controls-grid { grid-template-columns: 1fr; }
+        }
+
+        /* Grid de Links */
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 16px;
+        }
+
+        .link-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .link-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--primary-color);
+        }
+
+        .link-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .badge {
+            font-size: 0.75rem;
+            padding: 3px 8px;
+            border-radius: 12px;
+            background: rgba(56, 189, 248, 0.15);
+            color: var(--primary-color);
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .btn-delete {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        .btn-delete:hover {
+            color: var(--danger-color);
+        }
+
+        .link-title {
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .link-url {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            word-break: break-all;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        .link-url:hover {
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1><i class="fa-solid fa-compass"></i> Meus Links & Favoritos</h1>
+            <p>Sua central de acesso rápido para qualquer site da web</p>
+        </header>
+
+        <section class="card">
+            <h2><i class="fa-solid fa-plus"></i> Adicionar Novo Link</h2>
+            <form id="form-link">
+                <div class="form-grid">
+                    <input type="text" id="input-titulo" placeholder="Nome do site (ex: Wikipedia)" required>
+                    <input type="url" id="input-url" placeholder="URL (ex: https://...)" required>
+                    <select id="select-categoria">
+                        <option value="Estudos">Estudos</option>
+                        <option value="Ferramentas">Ferramentas</option>
+                        <option value="Entretenimento">Entretenimento</option>
+                        <option value="Redes Sociais">Redes Sociais</option>
+                        <option value="Geral">Geral</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-add">Salvar Link</button>
+            </form>
+        </section>
+
+        <div class="controls-grid">
+            <input type="text" id="search-input" placeholder="🔍 Pesquisar nos meus links...">
+            <select id="filter-categoria">
+                <option value="Todas">Todas as Categorias</option>
+                <option value="Estudos">Estudos</option>
+                <option value="Ferramentas">Ferramentas</option>
+                <option value="Entretenimento">Entretenimento</option>
+                <option value="Redes Sociais">Redes Sociais</option>
+                <option value="Geral">Geral</option>
+            </select>
+        </div>
+
+        <main>
+            <div id="grid-links" class="links-grid">
+                </div>
+        </main>
+    </div>
+
+    <script>
+        // Lista inicial com alguns exemplos pré-carregados
+        const linksIniciais = [
+            { id: 1, titulo: "Google", url: "https://www.google.com", categoria: "Geral" },
+            { id: 2, titulo: "MDN Web Docs", url: "https://developer.mozilla.org", categoria: "Estudos" },
+            { id: 3, titulo: "GitHub", url: "https://github.com", categoria: "Ferramentas" },
+            { id: 4, titulo: "YouTube", url: "https://youtube.com", categoria: "Entretenimento" }
+        ];
+
+        // Tenta buscar no localStorage ou carrega a lista padrão
+        let meusLinks = JSON.parse(localStorage.getItem('links_gerenciador')) || linksIniciais;
+
+        const grid = document.getElementById('grid-links');
+        const form = document.getElementById('form-link');
+        const searchInput = document.getElementById('search-input');
+        const filterCategory = document.getElementById('filter-categoria');
+
+        // Função para atualizar a tela
+        function renderizar() {
+            grid.innerHTML = '';
+
+            const busca = searchInput.value.toLowerCase();
+            const categoriaFiltro = filterCategory.value;
+
+            // Filtra por termo de busca e por categoria
+            const filtrados = meusLinks.filter(item => {
+                const bateBusca = item.titulo.toLowerCase().includes(busca) || item.url.toLowerCase().includes(busca);
+                const bateCategoria = categoriaFiltro === 'Todas' || item.categoria === categoriaFiltro;
+                return bateBusca && bateCategoria;
+            });
+
+            if (filtrados.length === 0) {
+                grid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--text-secondary); padding: 20px;">Nenhum link encontrado.</p>`;
+                return;
+            }
+
+            filtrados.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'link-card';
+
+                card.innerHTML = `
+                    <div>
+                        <div class="link-header">
+                            <span class="badge">${item.categoria}</span>
+                            <button class="btn-delete" onclick="removerLink(${item.id})" title="Excluir">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                        <div class="link-title">${item.titulo}</div>
+                    </div>
+                    <a href="${item.url}" target="_blank" class="link-url">
+                        Acessar site <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                    </a>
+                `;
+
+                grid.appendChild(card);
+            });
+
+            // Guarda as alterações no navegador
+            localStorage.setItem('links_gerenciador', JSON.stringify(meusLinks));
+        }
+
+        // Adicionar novo link
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            let url = document.getElementById('input-url').value.trim();
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                url = 'https://' + url;
+            }
+
+            const novoItem = {
+                id: Date.now(),
+                titulo: document.getElementById('input-titulo').value.trim(),
+                url: url,
+                categoria: document.getElementById('select-categoria').value
+            };
+
+            meusLinks.unshift(novoItem);
+            renderizar();
+
+            // Limpa o formulário
+            document.getElementById('input-titulo').value = '';
+            document.getElementById('input-url').value = '';
+        });
+
+        // Remover link por ID
+        function removerLink(id) {
+            meusLinks = meusLinks.filter(item => item.id !== id);
+            renderizar();
+        }
+
+        // Listeners para busca e filtro
+        searchInput.addEventListener('input', renderizar);
+        filterCategory.addEventListener('change', renderizar);
+
+        // Inicializa a aplicação
+        renderizar();
+    </script>
+</body>
+</html>
